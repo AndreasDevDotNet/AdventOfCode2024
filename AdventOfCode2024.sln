@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35506.116 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScratchPad", "ScratchPad\ScratchPad.csproj", "{FDA029EF-59C4-46A9-B05A-D95B4B3B6510}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AoCToolbox", "AoCToolbox\AoCToolbox.csproj", "{BEC2D39F-5A61-440A-B2C4-765CA21AF871}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FDA029EF-59C4-46A9-B05A-D95B4B3B6510}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDA029EF-59C4-46A9-B05A-D95B4B3B6510}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDA029EF-59C4-46A9-B05A-D95B4B3B6510}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDA029EF-59C4-46A9-B05A-D95B4B3B6510}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEC2D39F-5A61-440A-B2C4-765CA21AF871}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEC2D39F-5A61-440A-B2C4-765CA21AF871}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEC2D39F-5A61-440A-B2C4-765CA21AF871}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEC2D39F-5A61-440A-B2C4-765CA21AF871}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
