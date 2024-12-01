@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35506.116 d17.12
+VisualStudioVersion = 17.12.35506.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScratchPad", "ScratchPad\ScratchPad.csproj", "{FDA029EF-59C4-46A9-B05A-D95B4B3B6510}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AoCToolbox", "AoCToolbox\AoCToolbox.csproj", "{BEC2D39F-5A61-440A-B2C4-765CA21AF871}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Day1", "Day1\Day1.csproj", "{DCC0AF9E-69B9-48C2-BBE0-1FD7D3B4F996}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{BEC2D39F-5A61-440A-B2C4-765CA21AF871}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEC2D39F-5A61-440A-B2C4-765CA21AF871}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEC2D39F-5A61-440A-B2C4-765CA21AF871}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCC0AF9E-69B9-48C2-BBE0-1FD7D3B4F996}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCC0AF9E-69B9-48C2-BBE0-1FD7D3B4F996}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCC0AF9E-69B9-48C2-BBE0-1FD7D3B4F996}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCC0AF9E-69B9-48C2-BBE0-1FD7D3B4F996}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
