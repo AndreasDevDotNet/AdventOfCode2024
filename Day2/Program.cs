@@ -36,7 +36,7 @@ static bool CanBecomeSafeByRemovingOneLevel(IList<int> levels)
     {
         var newLevels = levels.Where((val, index) => index != i).ToList();
 
-        if (IsSafe( newLevels))
+        if (IsSafe(newLevels))
             return true;
     }
 
