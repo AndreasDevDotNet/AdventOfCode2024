@@ -1,31 +1,16 @@
 ﻿using AoCToolbox;
 
 Console.WriteLine("--- Day 1: Historian Hysteria ---");
-var input = File.ReadAllLines("input.txt").ToList();
+var input = File.ReadAllLines("input.txt").ToList().Select(x => x.ParseInts()).Select(x => (x[0], x[1]));
 
-var leftList = new List<int>();
-var rightList = new List<int>();
-foreach (var item in input)
-{
-    var parts = item.ParseInts();
-    leftList.Add(parts[0]);
-    rightList.Add(parts[1]);
-}
+var leftList = input.Select(x => x.Item1).OrderBy(x => x).ToList();
+var rightList = input.Select(x => x.Item2).OrderBy(x => x).ToList();
 
-leftList.Sort();
-rightList.Sort();
-
-var sumDist = 0;
-var numSimmilar = 0;
-for (int i = 0; i < leftList.Count; i++)
-{
-    sumDist += Math.Max(rightList[i], leftList[i]) - Math.Min(leftList[i],rightList[i]);
-    var rightListCount = rightList.Count(x => x == leftList[i]);
-    numSimmilar += leftList[i] * rightListCount;
-}
+var sumDist = Enumerable.Range(0, leftList.Count).Sum(x => Math.Abs(rightList[x] - leftList[x]));
+var countSimmilar = leftList.Sum(x => x * rightList.Count(c => c == x));
 
 Console.WriteLine($"Part 1: {sumDist}");
-Console.WriteLine($"Part 2: {numSimmilar}");
+Console.WriteLine($"Part 2: {countSimmilar}");
 
 
 
