@@ -16,10 +16,7 @@ static int SumMul(string input)
 
     foreach (Match match in matches)
     {
-        int x = int.Parse(match.Groups[1].Value);
-        int y = int.Parse(match.Groups[2].Value);
-
-        total += x * y;
+        total += int.Parse(match.Groups[1].Value) * int.Parse(match.Groups[2].Value);
     }
 
     return total;
