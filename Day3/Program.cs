@@ -6,7 +6,7 @@ var input = File.ReadAllText("input.txt");
 Console.WriteLine($"Part 1: {SumMul(input)}");
 Console.WriteLine($"Part 2: {SumMulWithConditionals(input)}");
 
-static long SumMul(string input)
+static int SumMul(string input)
 {
     var total = 0;
 
@@ -25,7 +25,7 @@ static long SumMul(string input)
     return total;
 }
 
-static long SumMulWithConditionals(string input)
+static int SumMulWithConditionals(string input)
 {
     var total = 0;
     var pattern = @"mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\)";
