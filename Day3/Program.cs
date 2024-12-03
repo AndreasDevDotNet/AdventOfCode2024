@@ -8,18 +8,9 @@ Console.WriteLine($"Part 2: {SumMulWithConditionals(input)}");
 
 static int SumMul(string input)
 {
-    var total = 0;
-
     string pattern = @"mul\((\d+),(\d+)\)";
-
-    var matches = Regex.Matches(input, pattern);
-
-    foreach (Match match in matches)
-    {
-        total += int.Parse(match.Groups[1].Value) * int.Parse(match.Groups[2].Value);
-    }
-
-    return total;
+    var matches = Regex.Matches(input, pattern).ToList();
+    return matches.Sum(x => int.Parse(x.Groups[1].Value) * int.Parse(x.Groups[2].Value));
 }
 
 static int SumMulWithConditionals(string input)
