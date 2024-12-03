@@ -1,10 +1,10 @@
 ﻿using AoCToolbox;
 
 Console.WriteLine("--- Day 2: Red-Nosed Reports ---");
-var reports = File.ReadAllLines("input.txt").ToList().Select(x => x.ParseInts()).ToList();
+var reports = File.ReadAllLines("input.txt").Select(x => x.ParseInts()).ToList();
 
 var numSafe = reports.Count(x => IsSafe(x));
-var numSafeWithProblemDampner = reports.Count(x => IsSafe(x) || CanBecomeSafeByRemovingOneLevel(x));
+var numSafeWithProblemDampner = reports.Count(x => CanBecomeSafeByRemovingOneLevel(x));
 
 Console.WriteLine($"Part 1: {numSafe}");
 Console.WriteLine($"Part 2: {numSafeWithProblemDampner}");
