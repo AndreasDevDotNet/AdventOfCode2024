@@ -7,10 +7,10 @@
             var graph = new Dictionary<int, List<int>>();
             var inDegree = new Dictionary<int, int>();
 
-            foreach (var page in nodes)
+            foreach (var node in nodes)
             {
-                graph[page] = new List<int>();
-                inDegree[page] = 0;
+                graph[node] = new List<int>();
+                inDegree[node] = 0;
             }
 
             foreach (var (x, y) in edges)
