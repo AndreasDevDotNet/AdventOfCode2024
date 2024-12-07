@@ -34,7 +34,7 @@ for (int row = 0; row < map.Count; row++)
 Console.WriteLine($"Part 2: {count}");
 
 sw.Stop();
-Console.WriteLine(sw.Elapsed.TotalSeconds);
+Console.WriteLine($"Total seconds: {sw.Elapsed.TotalSeconds}");
 
 static bool IsGuardLooping(List<string> map, (int row, int col) guardPos)
 {
