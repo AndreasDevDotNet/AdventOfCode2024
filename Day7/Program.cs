@@ -9,7 +9,7 @@ foreach (var calibrationEq in calibrationEquations)
 {
     for(int mask = 0; mask < (1 << (calibrationEq.Numbers.Count - 1)); mask++)
     {
-        var result = EvealuatEquation(calibrationEq.Numbers, mask);
+        var result = EvaluatEquation(calibrationEq.Numbers, mask);
         if (result == calibrationEq.TestSum)
         {
             totalSum += calibrationEq.TestSum;
@@ -28,7 +28,7 @@ foreach (var calibrationEq in calibrationEquations)
 
     for (int mask = 0; mask < Math.Pow(3, operatorCount); mask++)
     {
-        var result = EvealuatEquationExtended(calibrationEq.Numbers, ConvertToBaseThree(mask, operatorCount));
+        var result = EvaluatEquationExtended(calibrationEq.Numbers, ConvertToBaseThree(mask, operatorCount));
         if (result == calibrationEq.TestSum)
         {
             totalSum += calibrationEq.TestSum;
@@ -39,7 +39,7 @@ foreach (var calibrationEq in calibrationEquations)
 
 Console.WriteLine($"Part 2: {totalSum}");
 
-static long EvealuatEquation(List<long> numbers, int operatorMask)
+static long EvaluatEquation(List<long> numbers, int operatorMask)
 {
     long result = numbers[0];
     for (int i = 1; i < numbers.Count; i++)
@@ -51,7 +51,7 @@ static long EvealuatEquation(List<long> numbers, int operatorMask)
     return result;
 }
 
-static long EvealuatEquationExtended(List<long> numbers, int[] operatorMask)
+static long EvaluatEquationExtended(List<long> numbers, int[] operatorMask)
 {
     long result = numbers[0];
     for (int i = 1; i < numbers.Count; i++)
