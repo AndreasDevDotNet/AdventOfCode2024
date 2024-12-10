@@ -1,7 +1,7 @@
 ﻿using AoCToolbox;
 
 Console.WriteLine("--- Day 10: Hoof It ---");
-var input = File.ReadAllLines("testinput.txt").ToList();
+var input = File.ReadAllLines("input.txt").ToList();
 
 var map = new List<List<int>>();
 var rows = input.Count;
