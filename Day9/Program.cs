@@ -1,12 +1,18 @@
-﻿Console.WriteLine("--- Day 9: Disk Fragmenter ---");
+﻿using System.Diagnostics;
+
+Console.WriteLine("--- Day 9: Disk Fragmenter ---");
+
+var sw = new Stopwatch();
+sw.Start();
 
 var input = File.ReadAllText("input.txt").Trim();
-var testinput = File.ReadAllText("testinput.txt").Trim();
 
-Console.WriteLine($"Part 1 (testdata): {FragmentByBlocks(testinput)}");
 Console.WriteLine($"Part 1: {FragmentByBlocks(input)}");
-Console.WriteLine($"Part 2 (testdata): {FragmentByFiles(testinput)}");
 Console.WriteLine($"Part 2: {FragmentByFiles(input)}");
+
+sw.Stop();
+Console.WriteLine("");
+Console.WriteLine($"Elapsed milliseconds {sw.Elapsed.Milliseconds}");
 
 static long FragmentByBlocks(string input)
 {
