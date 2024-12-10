@@ -34,18 +34,18 @@ static int CountTrailheadScore((int row, int col) startPos, List<List<int>> map)
     var seen = new HashSet<(int row, int col)>();
     var walkQ = new Queue<(int cr, int cc)>();
 
-    walkQ.Enqueue((startPos.row, startPos.col));
+    walkQ.Enqueue(startPos);
 
     int score = 0;
 
     while (walkQ.Count > 0)
     {
-        var next = walkQ.Dequeue();
+        (int cr, int cc) = walkQ.Dequeue();
 
-        foreach ((int nr, int nc) in new[] { (next.cr -1, next.cc), (next.cr, next.cc + 1), (next.cr + 1, next.cc), (next.cr, next.cc - 1) })
+        foreach ((int nr, int nc) in new[] { (cr -1, cc), (cr, cc + 1), (cr + 1, cc), (cr, cc - 1) })
         {
             if (nr < 0 || nc < 0 || nr >= map.Count || nc >= map[0].Count) continue;
-            if (map[nr][nc] != map[next.cr][next.cc] + 1) continue;
+            if (map[nr][nc] != map[cr][cc] + 1) continue;
             if(seen.Contains((nr,nc))) continue;
 
             seen.Add((nr,nc));
@@ -63,30 +63,30 @@ static int CountTrailheadScore((int row, int col) startPos, List<List<int>> map)
 static int GetTrailheadRating((int row, int col) startPos, List<List<int>> map)
 {
     var seen = new Dictionary<(int row, int col),int>();
-    seen.Add((startPos.row, startPos.col), 1);
+    seen.Add(startPos, 1);
     var walkQ = new Queue<(int cr, int cc)>();
 
-    walkQ.Enqueue((startPos.row, startPos.col));
+    walkQ.Enqueue(startPos);
 
     int trails = 0;
 
     while (walkQ.Count > 0)
     {
-        var next = walkQ.Dequeue();
-        if (map[next.cr][next.cc] == 9)
-            trails += seen[(next.cr, next.cc)];
+        (int cr, int cc) = walkQ.Dequeue();
+        if (map[cr][cc] == 9)
+            trails += seen[(cr, cc)];
 
-        foreach ((int nr, int nc) in new[] { (next.cr - 1, next.cc), (next.cr, next.cc + 1), (next.cr + 1, next.cc), (next.cr, next.cc - 1) })
+        foreach ((int nr, int nc) in new[] { (cr - 1, cc), (cr, cc + 1), (cr + 1, cc), (cr, cc - 1) })
         {
             if (nr < 0 || nc < 0 || nr >= map.Count || nc >= map[0].Count) continue;
-            if (map[nr][nc] != map[next.cr][next.cc] + 1) continue;
+            if (map[nr][nc] != map[cr][cc] + 1) continue;
             if (seen.ContainsKey((nr, nc)))
             {
-                seen[(nr, nc)] += seen[(next.cr, next.cc)];
+                seen[(nr, nc)] += seen[(cr, cc)];
                 continue;
             }
 
-            seen.Add((nr, nc), seen[(next.cr, next.cc)]);
+            seen.Add((nr, nc), seen[(cr, cc)]);
             walkQ.Enqueue((nr, nc));
         }
     }
