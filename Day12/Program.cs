@@ -13,14 +13,14 @@ for (int y = 0; y < lines.Length; y++)
     }
 }
 
-List<(char Symbol, HashSet<Complex> Positions)> regions = new List<(char, HashSet<Complex>)>();
-HashSet<Complex> uncovered = new HashSet<Complex>(grid.Keys);
+var regions = new List<(char Symbol, HashSet<Complex> Positions)>();
+var uncovered = new HashSet<Complex>(grid.Keys);
 
 while (uncovered.Count > 0)
 {
     Complex start = uncovered.First();
     uncovered.Remove(start);
-    HashSet<Complex> region = FloodFill(grid, start);
+    var region = FloodFill(grid, start);
     uncovered.ExceptWith(region);
     regions.Add((grid[start], region));
 }
@@ -47,9 +47,9 @@ Console.WriteLine($"Part 2: {totalPrice}");
 
 static HashSet<Complex> FloodFill(Dictionary<Complex, char> grid, Complex start)
 {
-    HashSet<Complex> region = new HashSet<Complex> { start };
-    char symbol = grid[start];
-    Queue<Complex> queue = new Queue<Complex>();
+    var region = new HashSet<Complex> { start };
+    var symbol = grid[start];
+    var queue = new Queue<Complex>();
     queue.Enqueue(start);
 
     Complex[] directions = { 1, -1, Complex.ImaginaryOne, -Complex.ImaginaryOne };
@@ -91,7 +91,7 @@ static int CalculatePerimeter((char Symbol, HashSet<Complex> Positions) region)
 
 static int GetSidesCount((char Symbol, HashSet<Complex> Positions) region)
 {
-    HashSet<(Complex Pos, Complex Dir)> perimeterObjects = new HashSet<(Complex, Complex)>();
+    var perimeterObjects = new HashSet<(Complex Pos, Complex Dir)>();
     Complex[] directions = { 1, -1, Complex.ImaginaryOne, -Complex.ImaginaryOne };
 
     foreach (Complex pos in region.Positions)
@@ -113,7 +113,7 @@ static int GetSidesCount((char Symbol, HashSet<Complex> Positions) region)
         perimeterObjects.Remove((pos, d));
         distinctSides++;
 
-        Complex next = pos + d * Complex.ImaginaryOne;
+        var next = pos + d * Complex.ImaginaryOne;
         while (perimeterObjects.Contains((next, d)))
         {
             perimeterObjects.Remove((next, d));
