@@ -41,4 +41,9 @@ public static class NumberExtensions
         while (index < 0) index += max;
         return index;
     }
+
+    public static bool IsWholeNumber(this double number)
+    {
+        return Math.Abs(number - Math.Round(number)) < double.Epsilon;
+    }
 }
