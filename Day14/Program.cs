@@ -44,38 +44,23 @@ static long GetSecondsToFormBotChristmasTree(int width, int height, List<List<in
 
         MoveBots(width, height, positions, velocities);
 
-        //Console.WriteLine($"---- {seconds} ----");
-
-        //for (int i = 0; i < height; i++)
-        //{
-        //    for (int j = 0; j < width; j++)
-        //    {
-        //        if (positions.Any(p => p[0] == j && p[1] == i))
-        //            Console.Write("█");
-        //        else
-        //            Console.Write(" ");
-        //    }
-        //    Console.WriteLine();
-        //}
+        //if (seconds >= 7750)
+        //    PrintRobots(seconds, positions.Where(x => x[0] >= 30 && x[1] >= 30).ToList(), width, height, 10, 10);
 
         var positionTuple = positions.Select(p => (p[0], p[1])).ToList();
-        if(positionTuple.Distinct().Count() == positionTuple.Count)
+        if (positionTuple.Distinct().Count() == positionTuple.Count)
             break;
+        //var distinctCount = positionTuple.Distinct().Count();
+        //if (seconds >= 7750)
+        //    Console.WriteLine($"Distinct count {distinctCount}");
+        //if (seconds == 7754)
+
+        //    break;
+        //if (seconds >= 7750)
+        //    Thread.Sleep(2000);
     }
 
-    Console.WriteLine($"---- {seconds} ----");
-
-    for (int i = 0;i < height;i++)
-    {
-        for (int j = 0;j < width; j++)
-        {
-            if(positions.Any(p => p[0] == j && p[1] == i))
-                Console.Write("█");
-            else
-                Console.Write(" ");
-        }
-        Console.WriteLine();
-    }
+    PrintRobots(seconds, positions, width, height);
 
     return seconds;
 }
@@ -87,7 +72,7 @@ static long CalculateSafetyFactor(int width, int height, List<List<int>> positio
         MoveBots(width, height, positions, velocities);
     }
 
-    int q1 = 0, q2 = 0, q3 = 0, q4 = 0;
+int q1 = 0, q2 = 0, q3 = 0, q4 = 0;
     foreach (var position in positions)
     {
         if (position[0] < width / 2)
@@ -129,5 +114,23 @@ static void MoveBots(int width, int height, List<List<int>> positions, List<List
             position[1] += height;
         while (position[1] >= height)
             position[1] -= height;
+    }
+}
+
+static void PrintRobots(long seconds, List<List<int>> positions, int width, int height,  int startY = 0, int startX = 0)
+{
+    //Console.Clear();
+    Console.WriteLine($"---- {seconds} ----");
+
+    for (int i = startY; i < height; i++)
+    {
+        for (int j = startX; j < width; j++)
+        {
+            if (positions.Any(p => p[0] == j && p[1] == i))
+                Console.Write("█");
+            else
+                Console.Write(" ");
+        }
+        Console.WriteLine();
     }
 }
