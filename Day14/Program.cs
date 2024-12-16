@@ -44,20 +44,20 @@ static long GetSecondsToFormBotChristmasTree(int width, int height, List<List<in
 
         MoveBots(width, height, positions, velocities);
 
-        //if (seconds >= 7750)
-        //    PrintRobots(seconds, positions.Where(x => x[0] >= 30 && x[1] >= 30).ToList(), width, height, 10, 10);
+        if (seconds >= 7750)
+            PrintRobots(seconds, positions.Where(x => x[0] >= 30 && x[1] >= 30).ToList(), width, height, 10, 10);
 
         var positionTuple = positions.Select(p => (p[0], p[1])).ToList();
-        if (positionTuple.Distinct().Count() == positionTuple.Count)
-            break;
-        //var distinctCount = positionTuple.Distinct().Count();
-        //if (seconds >= 7750)
-        //    Console.WriteLine($"Distinct count {distinctCount}");
-        //if (seconds == 7754)
-
+        //if (positionTuple.Distinct().Count() == positionTuple.Count)
         //    break;
-        //if (seconds >= 7750)
-        //    Thread.Sleep(2000);
+        var distinctCount = positionTuple.Distinct().Count();
+        if (seconds >= 7750)
+            Console.WriteLine($"Distinct count {distinctCount}");
+        if (seconds == 7754)
+
+            break;
+        if (seconds >= 7750)
+            Thread.Sleep(2000);
     }
 
     PrintRobots(seconds, positions, width, height);
