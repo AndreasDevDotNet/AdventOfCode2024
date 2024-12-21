@@ -42,8 +42,6 @@ static int[,] CalculateDistances(List<string> grid, int rows, int cols, int curr
 
     while (grid[currentRow][currentCol] != 'E')
     {
-        (int, int)[] directions = { (1, 0), (-1, 0), (0, 1), (0, -1) };
-
         foreach (var (dr, dc) in new[] { (1, 0), (-1, 0), (0, 1), (0, -1) })
         {
             int nr = currentRow + dr;
