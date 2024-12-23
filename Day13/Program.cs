@@ -2,7 +2,7 @@
 
 Console.WriteLine("--- Day 13: Claw Contraption ---");
 
-var input = File.ReadAllText("testinput.txt").SplitByDoubleNewline();
+var input = File.ReadAllText("input.txt").SplitByDoubleNewline();
 var clawMachines = Enumerable.Range(0, input.Count).Select(i => new ClawMachine(input[i], false)).ToList();
 
 long fewestTokens = clawMachines.Sum(m => m.CalculateTokensRequired()); 
