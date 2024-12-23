@@ -11,7 +11,7 @@ Dictionary<char, (int row, int col)> Moves = new Dictionary<char, (int row, int 
     {'>', (0,1)}
 };
 
-var input = File.ReadAllText("input.txt").SplitByDoubleNewline();
+var input = File.ReadAllText("testinput.txt").SplitByDoubleNewline();
 var map = input[0].SplitByNewline();
 var moves = input[1].Replace("\n", "").Replace("\r", "");
 
@@ -217,7 +217,7 @@ static int CalculateLargerWarehouseGSPSum(List<string> map, string moves)
         botRow += dr;
         botCol += dc;
 
-        
+        DrawGrid(grid);
     }
 
     var gpsSum = 0;
@@ -384,6 +384,7 @@ static bool IsValidMove(int row, int col, List<string> map)
 
 static void DrawGrid(char[][] grid)
 {
+    Console.Clear();
     for (int r = 0; r < grid.Length; r++)
     {
         for (int c = 0; c < grid[r].Length; c++)
@@ -399,6 +400,7 @@ static void DrawGrid(char[][] grid)
 
 static void DrawMap(List<string> map, HashSet<(int row, int col)> boxes, int botRow, int botCol)
 {
+    Console.Clear();
     for (int row = 0; row < map.Count; row++)
     {
         for (int col = 0; col < map[0].Length; col++)

@@ -61,7 +61,7 @@ foreach (var code in codes)
 
 Console.WriteLine($"Part 2: {total}");
 
-long GetShortestSequenceForCode(string code, int depth, int maxDepth = 26)
+long GetShortestSequenceForCode(string code, int depth, int maxDepth)
 {
     if(shortestSequenceMemo.TryGetValue((code,depth), out var memo))
         return memo;
