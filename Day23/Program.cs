@@ -22,64 +22,64 @@ Console.WriteLine($"Part 2: {string.Join(",", maxConnected.First().Order())}");
 
 // Diffrent implementation
 
-var nodes = new Dictionary<string, HashSet<string>>();
+//var nodes = new Dictionary<string, HashSet<string>>();
 
-foreach (var connection in connections)
-{
-    if (!nodes.ContainsKey(connection.NodeA))
-        nodes[connection.NodeA] = new HashSet<string>();
-    if (!nodes.ContainsKey(connection.NodeB))
-        nodes[connection.NodeB] = new HashSet<string>();
-    nodes[connection.NodeA].Add(connection.NodeB);
-    nodes[connection.NodeB].Add(connection.NodeA);
-}
+//foreach (var connection in connections)
+//{
+//    if (!nodes.ContainsKey(connection.NodeA))
+//        nodes[connection.NodeA] = new HashSet<string>();
+//    if (!nodes.ContainsKey(connection.NodeB))
+//        nodes[connection.NodeB] = new HashSet<string>();
+//    nodes[connection.NodeA].Add(connection.NodeB);
+//    nodes[connection.NodeB].Add(connection.NodeA);
+//}
 
-var sets = new HashSet<string>();
-foreach (var x in nodes.Keys)
-{
-    foreach (var y in nodes[x])
-    {
-        foreach (var z in nodes[y])
-        {
-            if (x != z && nodes[z].Contains(x))
-            {
-                var triangle = new[] { x, y, z }.OrderBy(v => v);
-                sets.Add(string.Join(",", triangle));
-            }
-        }
-    }
-}
+//var sets = new HashSet<string>();
+//foreach (var x in nodes.Keys)
+//{
+//    foreach (var y in nodes[x])
+//    {
+//        foreach (var z in nodes[y])
+//        {
+//            if (x != z && nodes[z].Contains(x))
+//            {
+//                var triangle = new[] { x, y, z }.OrderBy(v => v);
+//                sets.Add(string.Join(",", triangle));
+//            }
+//        }
+//    }
+//}
 
-var count = sets.Count(s => s.Split(',').Any(node => node.StartsWith("t")));
-Console.WriteLine($"Part 1: {count}");
+//var count = sets.Count(s => s.Split(',').Any(node => node.StartsWith("t")));
+//Console.WriteLine($"Part 1: {count}");
 
-sets.Clear();
+//sets.Clear();
 
-foreach (var x in nodes.Keys)
-{
-    Search(x, new HashSet<string> { x });
-}
+//foreach (var x in nodes.Keys)
+//{
+//    Search(x, new HashSet<string> { x });
+//}
 
-var largestSet = sets.OrderByDescending(s => s.Count(c => c == ',') + 1).First();
-Console.WriteLine($"Part 2: {largestSet}");
+//var largestSet = sets.OrderByDescending(s => s.Count(c => c == ',') + 1).First();
+//Console.WriteLine($"Part 2: {largestSet}");
 
-void Search(string node, HashSet<string> req)
-{
-    var key = string.Join(",", req.OrderBy(x => x));
-    if (sets.Contains(key)) return;
-    sets.Add(key);
+//void Search(string node, HashSet<string> req)
+//{
+//    var key = string.Join(",", req.OrderBy(x => x));
+//    if (sets.Contains(key)) return;
+//    sets.Add(key);
 
-    foreach (var neighbor in nodes[node])
-    {
-        if (req.Contains(neighbor)) continue;
+//    foreach (var neighbor in nodes[node])
+//    {
+//        if (req.Contains(neighbor)) continue;
 
-        bool isConnectedToAll = req.All(query => nodes[query].Contains(neighbor));
-        if (!isConnectedToAll) continue;
+//        bool isConnectedToAll = req.All(query => nodes[query].Contains(neighbor));
+//        if (!isConnectedToAll) continue;
 
-        var newReq = new HashSet<string>(req) { neighbor };
-        Search(neighbor, newReq);
-    }
-}
+//        var newReq = new HashSet<string>(req) { neighbor };
+//        Search(neighbor, newReq);
+//    }
+//}
 
 
 
