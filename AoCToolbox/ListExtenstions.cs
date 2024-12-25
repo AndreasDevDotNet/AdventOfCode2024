@@ -270,4 +270,33 @@ public static class ListExtenstions
             }
         }
     }
+
+    public static List<string> Transpose(this string[] input)
+    {
+        if (input.Length == 0)
+            return new List<string>();
+
+        // Find the maximum width
+        int maxWidth = input.Max(row => row.Length);
+
+        // Initialize result list
+        var result = new List<string>();
+
+        // Process each column
+        for (int col = 0; col < maxWidth; col++)
+        {
+            var transposedColumn = new char[input.Length];
+
+            // Process each row
+            for (int row = 0; row < input.Length; row++)
+            {
+                // Handle cases where the current row might be shorter than maxWidth
+                transposedColumn[row] = col < input[row].Length ? input[row][col] : ' ';
+            }
+
+            result.Add(new string(transposedColumn));
+        }
+
+        return result;
+    }
 }

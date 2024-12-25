@@ -58,6 +58,34 @@
             return result;
         }
 
+        public static char[][] AppendItems(this char[][] source, char[][] elements, char elementToFind)
+        {
+            int rows = source.Length;
+            int columns = source[0].Length;
+
+            char[][] result = new char[rows][];
+
+            for (int i = 0; i < rows; i++)
+            {
+                result[i] = new char[columns];
+                for (int j = 0; j < columns; j++)
+                {
+                    result[i][j] = source[i][j];
+                }
+            }
+
+            for (int i = 0; i < elements.Length; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    if (elements[i][j] == elementToFind)
+                        result[i][j] = elements[i][j];
+                }
+            }
+
+            return result;
+        }
+
         public static T[][] Transpose<T>(this T[][] matrix)
         {
             if (matrix.Length == 0 || matrix[0].Length == 0)
