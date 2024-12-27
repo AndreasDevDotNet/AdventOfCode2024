@@ -1,4 +1,5 @@
 ﻿using AoCToolbox;
+using System.Diagnostics;
 
 Console.WriteLine("--- Day 24: Crossed Wires ---");
 
@@ -11,7 +12,7 @@ Dictionary<string, Func<int, int, int>> operators = new Dictionary<string, Func<
     ["XOR"] = (x, y) => x ^ y
 };
 
-var blocks = File.ReadAllText("testinput.txt").SplitByDoubleNewline();
+var blocks = File.ReadAllText("input.txt").SplitByDoubleNewline();
 
 var lines = blocks[0].SplitByNewline().ToList();
 foreach (var line in lines)
@@ -41,7 +42,8 @@ while (true)
 
 string binaryString = string.Join("", z.AsEnumerable().Reverse().Select(x => x.ToString()));
 Console.WriteLine($"Part 1: {Convert.ToInt64(binaryString, 2)}");
-
+var sw = new Stopwatch();
+sw.Start();
 List<string> swaps = new List<string>();
 for (int swap = 0; swap < 4; swap++)
 {
@@ -78,6 +80,8 @@ for (int swap = 0; swap < 4; swap++)
 }
 
 Console.WriteLine($"Part 2: {string.Join(",", swaps.OrderBy(s => s))}");
+sw.Stop();
+Console.WriteLine($"Elapsed: {sw.ElapsedMilliseconds} ms");
 
 int Eval(string wire)
 {

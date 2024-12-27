@@ -99,14 +99,24 @@ public class Graph
         return true;
     }
 
+    private readonly Dictionary<(HashSet<string>, HashSet<string>, HashSet<string>), List<HashSet<string>>> memo = new();
+
     private void BronKerbosch(HashSet<string> r, HashSet<string> p, HashSet<string> x, List<HashSet<string>> result)
     {
+        var key = (new HashSet<string>(r), new HashSet<string>(p), new HashSet<string>(x));
+        if (memo.TryGetValue(key, out var cachedResult))
+        {
+            result.AddRange(cachedResult);
+            return;
+        }
+
         if (p.Count == 0 && x.Count == 0)
         {
             if (r.Count > 0)
             {
                 result.Add(new HashSet<string>(r));
             }
+            memo[key] = new List<HashSet<string>>(result);
             return;
         }
 
@@ -131,6 +141,8 @@ public class Graph
             p.Remove(v);
             x.Add(v);
         }
+
+        memo[key] = new List<HashSet<string>>(result);
     }
 
     private string ChoosePivot(HashSet<string> p, HashSet<string> x)
