@@ -217,7 +217,7 @@ static int CalculateLargerWarehouseGSPSum(List<string> map, string moves)
         botRow += dr;
         botCol += dc;
 
-        DrawGrid(grid);
+        //DrawGrid(grid);
     }
 
     var gpsSum = 0;

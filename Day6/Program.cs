@@ -7,28 +7,28 @@ var map = File.ReadAllLines("input.txt").ToList();
 
 var guardPos = FindGuardPosition(map);
 
-Console.WriteLine($"Part 1: {SimulateGuardMovement(map, guardPos)}");
+var visted = SimulateGuardMovement(map, guardPos);
+
+Console.WriteLine($"Part 1: {visted.Count}");
 
 var count = 0;
-
-for (int row = 0; row < map.Count; row++)
+foreach (var position in visted)
 {
-    for (int col = 0; col < map.Count; col++)
-    {
-        if (map[row][col] != '.') continue;
+    var row = position.row;
+    var col = position.col;
 
-        // Insert obstacle
-        map[row] = map[row].Remove(col, 1);
-        map[row] = map[row].Insert(col, "#");
+    if (map[row][col] != '.') continue;
 
-        if (IsGuardLooping(map, guardPos))
-            count++;
+    // Insert obstacle
+    map[row] = map[row].Remove(col, 1);
+    map[row] = map[row].Insert(col, "#");
 
-        // Remove obstacle
-        map[row] = map[row].Remove(col, 1);
-        map[row] = map[row].Insert(col, ".");
+    if (IsGuardLooping(map, guardPos))
+        count++;
 
-    }
+    // Remove obstacle
+    map[row] = map[row].Remove(col, 1);
+    map[row] = map[row].Insert(col, ".");
 }
 
 Console.WriteLine($"Part 2: {count}");
@@ -63,7 +63,7 @@ static bool IsGuardLooping(List<string> map, (int row, int col) guardPos)
     }
 }
 
-static int SimulateGuardMovement(List<string> map, (int row, int col) guardPos)
+static HashSet<(int row, int col)> SimulateGuardMovement(List<string> map, (int row, int col) guardPos)
 {
     var visited = new HashSet<(int row, int col)>();
 
@@ -86,7 +86,7 @@ static int SimulateGuardMovement(List<string> map, (int row, int col) guardPos)
         }
     }
 
-    return visited.Count;
+    return visited;
 }
 
 static (int dr, int dc) CycleDirection((int dr, int dc) currentDirection)
