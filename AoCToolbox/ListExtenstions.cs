@@ -212,11 +212,21 @@ public static class ListExtenstions
         return false;
     }
 
-    public static T Pop<T>(this IList<T> source)
+    public static T Pop<T>(this IList<T> source, int index = -1)
     {
-        var itemToReturn = source.Last();
-        source.RemoveAt(source.Count - 1);
-        return itemToReturn;
+        if (index == -1)
+        {
+            var itemToReturn = source.Last();
+            source.RemoveAt(source.Count - 1);
+            return itemToReturn;
+        }
+        else
+        {
+            var itemToReturn = source[0];
+            source.RemoveAt(index);
+            return itemToReturn;
+        }
+
     }
 
     public static int[] PruneListByBitwiseSelection(this IList<string> list, int length, Func<int, int, int> criteriaSelector)

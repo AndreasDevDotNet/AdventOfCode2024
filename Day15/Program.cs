@@ -3,128 +3,29 @@ using AoCToolbox;
 
 Console.WriteLine("--- Day 15: Warehouse Woes ---");
 
-Dictionary<char, (int row, int col)> Moves = new Dictionary<char, (int row, int col)>
+var dir = new RowCol(0, 0);
+
+Dictionary<char, RowCol> Moves = new Dictionary<char, RowCol>
 {
-    {'^', (-1,0)},
-    {'v', (1,0)},
-    {'<', (0,-1)},
-    {'>', (0,1)}
+    {'^', dir.Up()},
+    {'v', dir.Down()},
+    {'<', dir.Left()},
+    {'>', dir.Right()}
 };
 
-var input = File.ReadAllText("testinput.txt").SplitByDoubleNewline();
+var input = File.ReadAllText("test.txt").SplitByDoubleNewline();
 var map = input[0].SplitByNewline();
 var moves = input[1].Replace("\n", "").Replace("\r", "");
 
-Console.WriteLine($"Part 1: {CalculateWarehouseGSPSum(Moves, map, moves)}");
-Console.WriteLine($"Part 2: {CalculateLargerWarehouseGSPSum(map, moves)}");
-
-static int CalculateWarehouseGSPSum2(List<string> map, string moves)
-{
-    var grid = CreateWarehouse(map);
-
-    var rows = grid.Length;
-    var cols = grid[0].Length;
-
-    var botRow = -1;
-    var botCol = -1;
-
-    for (var r = 0; r < rows; r++)
-    {
-        for (var c = 0; c < cols; c++)
-        {
-            if (grid[r][c] == '@')
-            {
-                botRow = r;
-                botCol = c;
-                break;
-            }
-        }
-        if (botRow != -1)
-            break;
-    }
-
-    foreach (var move in moves)
-    {
-        int dr = move switch
-        {
-            '^' => -1,
-            'v' => 1,
-            _ => 0,
-        };
-
-        int dc = move switch
-        {
-            '<' => -1,
-            '>' => 1,
-            _ => 0,
-        };
-
-        var moveTargets = new List<(int, int)> { (botRow, botCol) };
-
-        var cr = botRow;
-        var cc = botRow;
-
-        bool canMove = true;
-
-        while (true)
-        {
-            cr += dr;
-            cc += dc;
-
-            var currentChar = grid[cr][cc];
-
-            if(currentChar == '#')
-            {
-                canMove = false;
-                break;
-            }
-
-            if(currentChar == 'O')
-                moveTargets.Add((cr, cc));
-
-            if (currentChar == '.')
-                break;
-        }
-
-        if(!canMove) continue;
-
-        if ((botRow + dr > 0 && botRow + dr <= grid.Length - 1) && (botCol + dc > 0 && botCol + dc <= grid[0].Length - 1) && grid[botRow + dr][botCol + dc] != '#')
-        {
-            grid[botRow][botCol] = '.';
-            grid[botRow + dr][botCol + dc] = '@'; 
-        }
-
-        foreach (var (br,bc) in moveTargets.Skip(1))
-        {
-            grid[br + dr][bc + dc] = 'O';
-        }
-
-        botRow += dr;
-        botCol += dc;
-
-        Console.WriteLine(move);
-        DrawGrid(grid);
-    }
-
-    var gpsSum = 0;
-
-    for (int r = 0; r < rows; r++)
-    {
-        for (int c = 0; c < cols; c++)
-        {
-            if (grid[r][c] == 'O')
-            {
-                gpsSum += 100 * r + c;
-            }
-        }
-    }
-
-    return gpsSum;
-}
+//Console.WriteLine($"Part 1: {CalculateWarehouseGSPSum(Moves, map, moves)}");
+//Console.WriteLine($"Part 2: {CalculateLargerWarehouseGSPSum(map, moves)}");
+Console.WriteLine($"Part 2: {CalculateLargerWarehouseGSPSum2(Moves,map, moves)}");
 
 static int CalculateLargerWarehouseGSPSum(List<string> map, string moves)
 {
     var grid = CreateLargerWarehouse(map);
+
+    //DrawGrid(grid);
 
     var rows = grid.Length;
     var cols = grid[0].Length;
@@ -236,16 +137,253 @@ static int CalculateLargerWarehouseGSPSum(List<string> map, string moves)
     return gpsSum;
 }
 
-static char[][] CreateWarehouse(List<string> map)
+static int CalculateLargerWarehouseGSPSum2(Dictionary<char, RowCol> Moves, List<string> map, string moves)
 {
-    var scaledMap = new List<char[]>();
+    var grid = CreateLargerWarehouse(map);
 
-    foreach (var row in map)
+    var rows = grid.Length;
+    var cols = grid[0].Length;
+
+    RowCol botRowCol = null;
+
+    var boxes = new HashSet<(RowCol leftEdge, RowCol rightEdge)>();
+
+    for (int row = 0; row < rows; row++)
     {
-        scaledMap.Add(row.ToArray());
+        for (int col = 0; col < cols; col++)
+        {
+            if (grid[row][col] == '@')
+            {
+                botRowCol = new RowCol(row, col);
+            }
+            else if (grid[row][col] == '[')
+            {
+                boxes.Add((new RowCol(row, col), new RowCol(row, col+1)));
+            }
+        }
     }
 
-    return scaledMap.ToArray();
+    DrawLargeMap(grid, boxes, botRowCol);
+
+    foreach (var move in moves)
+    {
+        var dir = Moves[move];
+
+        var nextRowCol = botRowCol + dir;
+
+        if (IsBoxInBotPath(boxes, nextRowCol, move))
+        {
+            if (CanMoveLargeBoxChain(nextRowCol, move, boxes, grid))
+            {
+                MoveLargeBoxChain(nextRowCol, dir, move, boxes);
+                botRowCol = nextRowCol;
+            }
+        }
+        else
+        {
+            if (IsValidMove(nextRowCol, grid))
+            {
+                botRowCol = nextRowCol;
+            }
+        }
+
+        DrawLargeMap(grid, boxes, botRowCol, move.ToString());
+    }
+
+    var gpsSum = boxes.Sum(b => 100 * b.leftEdge.Row + b.leftEdge.Col);
+    return gpsSum;
+}
+
+static void MoveLargeBoxChain(RowCol nextPos, RowCol dir, char move, HashSet<(RowCol leftEdge, RowCol rightEdge)> boxes)
+{
+    var boxPositions = new HashSet<(RowCol leftEdge, RowCol rightEdge)>();
+
+    while (IsBoxInBotPath(boxes, nextPos, move))
+    {
+        boxPositions.Add(GetBoxInBotPath(nextPos, boxes, move));
+
+        nextPos = nextPos + dir;
+    }
+
+    foreach (var boxPos in boxPositions)
+    {
+        boxes.TryGetValue(boxPos, out var box);
+        box.leftEdge = box.leftEdge + dir;
+        box.rightEdge = box.rightEdge + dir;
+    }
+}
+
+static (RowCol leftEdge, RowCol rightEdge) MoveBoxToNewPos((RowCol leftEdge, RowCol rightEdge) boxPos, char move)
+{
+    switch (move)
+    {
+        case '^':
+            return (new RowCol(boxPos.leftEdge.Row - 1, boxPos.leftEdge.Col), new RowCol(boxPos.rightEdge.Row - 1, boxPos.rightEdge.Col));
+        case 'v':
+            return (new RowCol(boxPos.leftEdge.Row + 1, boxPos.leftEdge.Col), new RowCol(boxPos.rightEdge.Row + 1, boxPos.rightEdge.Col));
+        case '<':
+            return (new RowCol(boxPos.leftEdge.Row, boxPos.leftEdge.Col - 1), new RowCol(boxPos.rightEdge.Row, boxPos.rightEdge.Col - 1));
+        case '>':
+            return (new RowCol(boxPos.leftEdge.Row, boxPos.leftEdge.Col + 1), new RowCol(boxPos.rightEdge.Row, boxPos.rightEdge.Col + 1));
+    }
+
+    throw new Exception("This should not happen");
+}
+
+static (RowCol leftEdge, RowCol rightEdge) GetBoxInBotPath(RowCol nextPos, HashSet<(RowCol leftEdge, RowCol rightEdge)> boxes, char move)
+{
+    switch (move)
+    {
+        case '^':
+        case 'v':
+            return boxes.FirstOrDefault(x => x.leftEdge == nextPos || x.rightEdge == nextPos);
+
+        case '<':
+            return boxes.FirstOrDefault(x => x.rightEdge.Col == nextPos.Col || x.rightEdge.Col == nextPos.Col - 1);
+        case '>':
+            return boxes.FirstOrDefault(x => x.leftEdge.Col == nextPos.Col || x.leftEdge.Col == nextPos.Col + 1);
+    }
+
+    throw new Exception("This should not happen");
+}
+
+static bool CanMoveLargeBoxChain(RowCol nextPos, char move, HashSet<(RowCol leftEdge, RowCol rightEdge)> boxes, char[][] grid)
+{
+    while (IsBoxInBotPath(boxes, nextPos, move))
+    {
+        nextPos = move switch
+        {
+            '^' => nextPos.Up(),
+            'v' => nextPos.Down(),
+            '<' => nextPos.Left(),
+            '>' => nextPos.Right()
+        };
+        if (!IsValidMove(nextPos, grid))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+static bool IsBoxInBotPath(HashSet<(RowCol leftEdge, RowCol rightEdge)> boxes, RowCol botPos, char move)
+{
+    switch (move)
+    {
+        case '^':
+        case 'v':
+            return boxes.Any(x => x.leftEdge == botPos || x.rightEdge == botPos);
+            
+        case '<':
+            return boxes.Any(x => x.rightEdge == botPos || x.rightEdge == botPos.Left());
+        case '>':
+            return boxes.Any(x => x.leftEdge == botPos || x.leftEdge == botPos.Right());
+    }
+
+    return false;
+}
+
+static int CalculateWarehouseGSPSum(Dictionary<char, RowCol> Moves, List<string> map, string moves)
+{
+    var grid = CreateWarehouse(map);
+
+    var rows = grid.Length;
+    var cols = grid[0].Length;
+
+    RowCol botRowCol = null;
+
+    var boxes = new HashSet<RowCol>();
+
+    for (int row = 0; row < rows; row++)
+    {
+        for (int col = 0; col < cols; col++)
+        {
+            if (grid[row][col] == '@')
+            {
+                botRowCol = new RowCol(row, col);
+            }
+            else if (grid[row][col] == 'O')
+            {
+                boxes.Add(new RowCol(row, col));
+            }
+        }
+    }
+
+    //DrawMap(grid, boxes, botRowCol);
+
+    foreach (var move in moves)
+    {
+        var dir = Moves[move];
+
+        var nextRowCol = botRowCol + dir;
+
+        if (boxes.Contains(nextRowCol))
+        {
+            if (CanMoveBoxChain(nextRowCol, move, boxes, grid))
+            {
+                MoveBoxChain(nextRowCol, dir, boxes);
+                botRowCol = botRowCol + dir;
+            }
+        }
+        else
+        {
+            if (IsValidMove(nextRowCol, grid))
+            {
+                botRowCol = nextRowCol;
+            }
+        }
+
+       //DrawMap(grid, boxes, botRowCol, move.ToString());
+    }
+
+    var gpsSum = boxes.Sum(b => 100 * b.Row + b.Col);
+    return gpsSum;
+}
+
+static void MoveBoxChain(RowCol nextPos, RowCol dir, HashSet<RowCol> boxes)
+{
+    var boxPositions = new List<RowCol>();
+
+    while (boxes.Contains(nextPos))
+    {
+        boxPositions.Add(nextPos);
+
+        nextPos = nextPos + dir;
+    }
+
+    boxPositions.Reverse();
+
+    foreach (var boxPos in boxPositions)
+    {
+        boxes.Remove(boxPos);
+        boxes.Add(boxPos + dir);
+    }
+}
+
+static bool CanMoveBoxChain(RowCol nextPos, char direction, HashSet<RowCol> boxes, char[][] grid)
+{
+    while (boxes.Contains(nextPos))
+    {
+        nextPos = direction switch
+        {
+            '^' => nextPos.Up(),
+            'v' => nextPos.Down(),
+            '<' => nextPos.Left(),
+            '>' => nextPos.Right()
+        };
+        if (!IsValidMove(nextPos, grid))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+static bool IsValidMove(RowCol move, char[][] grid)
+{
+    return move.Row >= 0 && move.Col >= 0 && move.Row < grid.Length && move.Col < grid[0].Length && grid[move.Row][move.Col] != '#';
 }
 
 static char[][] CreateLargerWarehouse(List<string> map)
@@ -281,105 +419,21 @@ static char[][] CreateLargerWarehouse(List<string> map)
     return scaledMap.ToArray();
 }
 
-
-
-static int CalculateWarehouseGSPSum(Dictionary<char, (int row, int col)> Moves, List<string> map, string moves)
+static char[][] CreateWarehouse(List<string> map)
 {
-    var rows = map.Count;
-    var cols = map.First().Length;
+    var charMap = new List<char[]>();
 
-    int botRow = 0;
-    int botCol = 0;
-
-    var boxes = new HashSet<(int row, int col)>();
-
-    for (int row = 0; row < rows; row++)
+    foreach (var row in map)
     {
-        for (int col = 0; col < cols; col++)
+        var charRow = new List<char>();
+        foreach (var col in row)
         {
-            if (map[row][col] == '@')
-            {
-                botRow = row;
-                botCol = col;
-            }
-            else if (map[row][col] == 'O')
-            {
-                boxes.Add((row, col));
-            }
+            charRow.Add(col);
         }
+        charMap.Add(charRow.ToArray());
     }
 
-    foreach (var move in moves)
-    {
-        (int dr, int dc) = Moves[move];
-
-        int nr = botRow + dr;
-        int nc = botCol + dc;
-
-        if (boxes.Contains((nr, nc)))
-        {
-            if (CanMoveBoxChain(nr, nc, dr, dc, boxes, map))
-            {
-                MoveBoxChain(nr, nc, dr, dc, boxes);
-                botRow = nr;
-                botCol = nc;
-            }
-        }
-        else
-        {
-            if (IsValidMove(nr, nc, map))
-            {
-                botRow = nr;
-                botCol = nc;
-            }
-        }
-
-        //DrawMap(map, boxes, botRow, botCol);
-    }
-
-    var gpsSum = boxes.Sum(b => 100 * b.row + b.col);
-    return gpsSum;
-}
-
-static void MoveBoxChain(int row, int col, int dr, int dc, HashSet<(int row, int col)> boxes)
-{
-    var boxPositions = new List<(int, int)>();
-
-    while (boxes.Contains((row, col)))
-    {
-        boxPositions.Add((row, col));
-
-        row += dr;
-        col += dc;
-    }
-
-    boxPositions.Reverse();
-
-    foreach (var (boxRow, boxCol) in boxPositions)
-    {
-        boxes.Remove((boxRow, boxCol));
-        boxes.Add((boxRow + dr, boxCol + dc));
-    }
-}
-
-static bool CanMoveBoxChain(int row, int col, int dr, int dc, HashSet<(int row, int col)> boxes, List<string> map)
-{
-    while (boxes.Contains((row, col)))
-    {
-        row += dr;
-        col += dc;
-        if (!IsValidMove(row, col, map))
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-static bool IsValidMove(int row, int col, List<string> map)
-{
-    return row >= 0 && col >= 0 && row < map.Count && col < map[0].Length && map[row][col] != '#';
+    return charMap.ToArray();
 }
 
 static void DrawGrid(char[][] grid)
@@ -398,28 +452,155 @@ static void DrawGrid(char[][] grid)
     Console.WriteLine();
 }
 
-static void DrawMap(List<string> map, HashSet<(int row, int col)> boxes, int botRow, int botCol)
+static void DrawMap(char[][] grid, HashSet<RowCol> boxes, RowCol botRowCol, string move = null)
 {
     Console.Clear();
-    for (int row = 0; row < map.Count; row++)
+
+    if (move != null)
     {
-        for (int col = 0; col < map[0].Length; col++)
+        string moveDir = move switch
         {
-            if (col == botCol && row == botRow)
+            "^" => "Up",
+            "v" => "Down",
+            "<" => "Left",
+            ">" => "Right"
+        };
+
+        Console.WriteLine(moveDir);
+
+    }
+    else
+    {
+        Console.WriteLine("Starting state");
+    }
+
+    for (int row = 0; row < grid.Length; row++)
+    {
+        for (int col = 0; col < grid[0].Length; col++)
+        {
+            if (col == botRowCol.Col && row == botRowCol.Row)
                 Console.Write('@');
-            else if (boxes.Contains((row, col)))
+            else if (boxes.Contains(new RowCol(row,col)))
                 Console.Write('O');
             else
             {
-                if (map[row][col] == '@' || map[row][col] == 'O')
+                if (grid[row][col] == '@' || grid[row][col] == 'O')
                     Console.Write('.');
                 else
-                    Console.Write(map[row][col]);
+                    Console.Write(grid[row][col]);
             }
 
         }
         Console.WriteLine();
     }
     Console.WriteLine();
+
+    Thread.Sleep(500);
+}
+
+static void DrawLargeMap(char[][] grid, HashSet<(RowCol leftEdge, RowCol rightEdge)> boxes, RowCol botRowCol, string move = null)
+{
+    Console.Clear();
+
+    if (move != null)
+    {
+        string moveDir = move switch
+        {
+            "^" => "Up",
+            "v" => "Down",
+            "<" => "Left",
+            ">" => "Right"
+        };
+
+        Console.WriteLine(moveDir);
+
+    }
+    else
+    {
+        Console.WriteLine("Starting state");
+    }
+
+    for (int row = 0; row < grid.Length; row++)
+    {
+        for (int col = 0; col < grid[0].Length; col++)
+        {
+            if (col == botRowCol.Col && row == botRowCol.Row)
+                Console.Write('@');
+            else if (boxes.Contains((new RowCol(row, col), new RowCol(row, col + 1))))
+            {
+                Console.Write('[');
+                Console.Write(']');
+                col++;
+            }
+            else
+            {
+                if (grid[row][col] == '@' || grid[row][col] == '[' || grid[row][col] == ']')
+                    Console.Write('.');
+                else
+                    Console.Write(grid[row][col]);
+            }
+
+        }
+        Console.WriteLine();
+    }
+    Console.WriteLine();
+
+    Thread.Sleep(500);
+}
+
+class Box
+{
+    public RowCol LeftEdge { get; private set; }
+    public RowCol RightEdge { get; private set; }
+
+    public Box(RowCol leftEdge, RowCol rightEdge)
+    {
+        LeftEdge = leftEdge;
+        RightEdge = rightEdge;
+    }
+
+    public HashSet<Box> GetAdjecentBoxes(List<Box> allBoxes, char direction)
+    {
+        var boxes = new HashSet<Box>();
+
+        List<Box> rightBoxes = new();
+        List<Box> leftBoxes = new();
+
+        switch (direction)
+        {
+            case '^':
+                rightBoxes = allBoxes.Where(x => x.RightEdge == RightEdge.Up()).ToList();
+                leftBoxes = allBoxes.Where(x => x.LeftEdge == LeftEdge.Up()).ToList();
+                foreach (Box box in rightBoxes)
+                    boxes.Add(box);
+                foreach (Box box in leftBoxes)
+                    boxes.Add(box);
+                break;
+            case 'v':
+                rightBoxes = allBoxes.Where(x => x.RightEdge == RightEdge.Down()).ToList();
+                leftBoxes = allBoxes.Where(x => x.LeftEdge == LeftEdge.Down()).ToList();
+                foreach (Box box in rightBoxes)
+                    boxes.Add(box);
+                foreach (Box box in leftBoxes)
+                    boxes.Add(box);
+                break;
+            case '<':
+                leftBoxes = allBoxes.Where(x => x.RightEdge == LeftEdge.Left()).ToList();
+                foreach (Box box in leftBoxes)
+                    boxes.Add(box);
+                break;
+            case '>':
+                rightBoxes = allBoxes.Where(x => x.LeftEdge == RightEdge.Right()).ToList();
+                foreach(Box box in rightBoxes)
+                    boxes.Add(box);
+                break;
+
+            default:
+                throw new Exception("Invild direction marker");
+        }
+
+        return boxes;
+    }
+
 }
 
